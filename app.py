@@ -1,21 +1,16 @@
 """
 甜宠小说转抖音视频 - Vercel API入口
 """
-import os
 from flask import Flask, jsonify, request
+import random
 
-app = Flask(____name__)
-
-# 延迟导入
-def get_spider():
-    from novel_spider.qimao import QimaoSpider
-    return QimaoSpider()
+app = Flask(__name__)
 
 @app.route('/')
 def index():
     return jsonify({
         "status": "ok",
-        "message": "🍬 甜宠小说转抖音视频 API",
+        "message": "甜宠小说转抖音视频 API",
         "endpoints": {
             "/crawl": "获取小说列表",
             "/chapter": "获取章节内容", 
@@ -27,7 +22,8 @@ def index():
 def crawl_novel():
     category = request.args.get('category', 'sweet')
     try:
-        spider = get_spider()
+        from novel_spider.qimao import QimaoSpider
+        spider = QimaoSpider()
         novels = spider.get_hot_novels(category=category)
         return jsonify({"success": True, "data": novels})
     except Exception as e:
@@ -40,7 +36,8 @@ def get_chapter():
     if not novel_id:
         return jsonify({"success": False, "error": "需要novel_id参数"})
     try:
-        spider = get_spider()
+        from novel_spider.qimao import QimaoSpider
+        spider = QimaoSpider()
         content = spider.get_chapter_content(novel_id, chapter_index)
         return jsonify({"success": True, "content": content})
     except Exception as e:
@@ -48,9 +45,9 @@ def get_chapter():
 
 @app.route('/auto')
 def auto_generate():
-    import random
     try:
-        spider = get_spider()
+        from novel_spider.qimao import QimaoSpider
+        spider = QimaoSpider()
         novels = spider.get_hot_novels(category='sweet')
         if not novels:
             return jsonify({"success": False, "error": "获取小说失败"})
@@ -68,6 +65,5 @@ def auto_generate():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
-# Vercel handler
 def handler(request):
     return app(request.environ, app.start_response)

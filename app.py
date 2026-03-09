@@ -1,20 +1,14 @@
-"""
-甜宠小说转抖音视频 - Vercel API入口（简化版）
-"""
 from flask import Flask, jsonify, request
+import random
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     return jsonify({
-        "status": "ok",
+        "status": "ok", 
         "message": "甜宠小说转抖音视频 API",
-        "endpoints": {
-            "/crawl": "获取小说列表",
-            "/chapter": "获取章节内容", 
-            "/auto": "全自动生成"
-        }
+        "endpoints": ["/crawl", "/chapter", "/auto"]
     })
 
 @app.route('/crawl')
@@ -32,7 +26,7 @@ def crawl_novel():
 def get_chapter():
     return jsonify({
         "success": True,
-        "content": "这是测试章节内容..."
+        "content": "凌晨三点，京城市中心医院的VIP病房里。林晚桐睁开眼睛..."
     })
 
 @app.route('/auto')
@@ -44,5 +38,6 @@ def auto_generate():
         "note": "完整版需要本地运行"
     })
 
+# Vercel handler
 def handler(request):
     return app(request.environ, app.start_response)

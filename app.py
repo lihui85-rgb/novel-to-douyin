@@ -65,5 +65,6 @@ def auto_generate():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+# Vercel serverless function
 def handler(request):
     return app(request.environ, app.start_response)
